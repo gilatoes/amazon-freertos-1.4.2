@@ -17,7 +17,7 @@ This Github repository can be copied into the MingW32 "home"\esp folder.
 Trust X is connected to ESP32-DevKitC power supply,  I2C interface, GPIO for software reset and an optional JTAG debugging interface.
 
 |ESP32 | Trust X Signal Name|
-|---|:---:|:---:|
+|---|:---:|
 |GPIO 22(IO22) | SCL |
 |GPIO 21(IO21) | SDA |
 |GPIO 18(IO18)| Reset |
