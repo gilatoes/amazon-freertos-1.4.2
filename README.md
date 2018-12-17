@@ -38,7 +38,7 @@ The connection from FTDI cable to ESP32 DevKitC is as follows:
 |Orange (pin 2) | IO13 | TCK|
 |Green (pin 4) | IO15 | TDO |
 
-After the hardware is wired up, follow the Amzaon instruction to install the software for debugging setup.
+After the hardware is wired up, follow the Amazon instruction to install the software for debugging setup.
 https://docs.aws.amazon.com/freertos/latest/userguide/getting_started_espressif.html
 
 FTDI driver:
