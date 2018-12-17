@@ -1,28 +1,77 @@
 ## Introduction
 
-This Github repository works on ESP32 with FreeRTOS 1.4.2. The application is Infineon Trust X device which performs One-way Authentication. The X.509 root CA certificate will first verify the Trust X end device certificate and it will generate a random number for ECDSA signing. The One-way Authentication will be completed by ECDSA verification of the signature using the Trust X public key. This project does not requires Wifi connectivity.
+This Github repository works on ESP32-DevKitC with FreeRTOS 1.4.2. The application is Infineon Trust X device which performs One-way Authentication. The X.509 root CA certificate will first verify the Trust X end device certificate and it will generate a random number for ECDSA signing. The One-way Authentication will be completed by ECDSA verification of the signature using the Trust X public key. This project does not requires Wifi connectivity.
 
-## Getting Started with Amazon FreeRTOS with ESP32 and OPTIGA Trust X
+## Getting Started with Amazon FreeRTOS with ESP32-DevKitC and OPTIGA Trust X
 
-Install the ESP32 development platform.
-Follow the ESP documentation for the Windows based toolchain setup.
+Install the ESP32-DevKitC development platform following the Amazon documentation:
+https://docs.aws.amazon.com/freertos/latest/userguide/getting_started_espressif.html
+
+Follow the ESP32 documentation for the Windows based toolchain setup.
 https://docs.espressif.com/projects/esp-idf/en/latest/get-started/windows-setup.html
 
 This Github repository can be copied into the MingW32 "home"\esp folder.
 
-## Hardware
+## Hardware and debugging setup
 
-ESP32 devkitc is used to work with FreeRTOS. Trust X is connected to the I2C interface and the JTAG with FTDI cable can be used to debug the project.
-Refer to Amazon documentation:
+Trust X is connected to ESP32-DevKitC power supply,  I2C interface, GPIO for software reset and an optional JTAG debugging interface.
+
+|ESP32 | Trust X Signal Name
+|---|:---:|:---:|
+|GPIO 22(IO22) | SCL |
+|GPIO 21(IO21) | SDA |
+|GPIO 18(IO18)| Reset |
+|3.3V | VCC |
+|GND | GND |
+
+JTAG debugging on ESP32-DevKitC can be done using an additional USB to MPSSE cable.
+FTDI C232HM-DDHSL-0 cable is the supported cable for JTAG debugging.
+Link: https://www.ftdichip.com/Products/Cables/USBMPSSE.htm
+
+The connection from FTDI cable to ESP32 DevKitC is as follows:
+
+|C232HM-DDHSL-0 Wire Color | ESP32 GPIO Pin | JTAG Signal Name
+|---|:---:|:---:|
+|Brown (pin 5) | IO14 | TMS|
+|Yellow (pin 3) | IO12 | TDI|
+|Black (pin 10) |GND |GND|
+|Orange (pin 2) | IO13 | TCK|
+|Green (pin 4) | IO15 | TDO |
+
+After the hardware is wired up, follow the Amzaon instruction to install the software for debugging setup.
 https://docs.aws.amazon.com/freertos/latest/userguide/getting_started_espressif.html
 
-## Hardware connectivity
-Trust X is connected via standard I2C and 1 GPIO is used for the reset pin.
+FTDI driver:
+http://www.ftdichip.com/Drivers/D2XX.htm
+
+OpenOCD configuration:
+https://github.com/espressif/openocd-esp32/releases
+
+Zadig.exe:
+https://zadig.akeo.ie/
+
+### Debugging on Windows
+Start command prompt, navigate to  <BASE_FOLDER>\demos\espressif\esp32_devkitc_esp_wrover_kit\make and start openOCD command:
+
+```openOCD configuration
+openocd.exe -f esp32_devkitj_v1.cfg -f esp-wroom-32.cfg
+```
+
+Open a new command prompt, navigate to your msys32 directory, and run mingw32.exe. In the mingw32 terminal, navigate to <BASE_FOLDER>\demos\espressif\esp32_devkitc_esp_wrover_kit\make and run make flash monitor.
+
+Open another mingw32 terminal, navigate to <BASE_FOLDER>\demos\espressif\esp32_devkitc_esp_wrover_kit\make and run the following command to trigger the breakpoint in the main function.
+
+```start gdb
+xtensa-esp32-elf-gdb -x gdbinit build/aws_demos.elf
+```
+
+Note: The ESP32 supports a maximum of two break points.
+
 
 ## Configuring the FreeRTOS environment
 Configure the serial terminal in the "home"\esp\amazon=freertos-1.4.2\demo\espressif\esp32_devkitc_esp_wrover_kit_trustx\make\sdkconfig
 
-The default COM setting is 11. Please change it to the value according to your enumerated serial port.
+The default COM setting is 8. Please change it to the value according to your enumerated serial port.
 
 ```serial configuration
 #
