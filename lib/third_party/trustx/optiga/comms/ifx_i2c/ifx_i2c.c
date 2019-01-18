@@ -36,6 +36,7 @@
 #include "optiga/ifx_i2c/ifx_i2c.h"
 #include "optiga/ifx_i2c/ifx_i2c_transport_layer.h"
 #include "optiga/pal/pal_os_event.h"
+#include "stdio.h"
 
 /// @cond hidden
 /***********************************************************************************************************************
@@ -374,6 +375,8 @@ void ifx_i2c_tl_event_handler(ifx_i2c_context_t* p_ctx,host_lib_status_t event, 
 static host_lib_status_t ifx_i2c_init(ifx_i2c_context_t* p_ifx_i2c_context)
 {    
     host_lib_status_t api_status = IFX_I2C_STACK_ERROR;
+
+    printf(">ifx_i2c_init()\r\n");
 	
 	if ((p_ifx_i2c_context->reset_type == (uint8_t)IFX_I2C_WARM_RESET)||
 	    (p_ifx_i2c_context->reset_type == (uint8_t)IFX_I2C_COLD_RESET))
@@ -386,6 +389,7 @@ static host_lib_status_t ifx_i2c_init(ifx_i2c_context_t* p_ifx_i2c_context)
 				{
 					pal_gpio_set_low(p_ifx_i2c_context->p_slave_vdd_pin);
 				}
+				printf("GPIO: IFX_I2C_STATE_RESET_PIN_LOW %d\r\n", RESET_LOW_TIME_MSEC);
 				pal_gpio_set_low(p_ifx_i2c_context->p_slave_reset_pin);
 				p_ifx_i2c_context->reset_state = IFX_I2C_STATE_RESET_PIN_HIGH;
 				pal_os_event_register_callback_oneshot((register_callback)ifx_i2c_init,
@@ -399,6 +403,7 @@ static host_lib_status_t ifx_i2c_init(ifx_i2c_context_t* p_ifx_i2c_context)
 				{
 					pal_gpio_set_high(p_ifx_i2c_context->p_slave_vdd_pin);
 				}
+				printf("GPIO: IFX_I2C_STATE_RESET_PIN_HIGH %d\r\n", STARTUP_TIME_MSEC);
 				pal_gpio_set_high(p_ifx_i2c_context->p_slave_reset_pin);
 				p_ifx_i2c_context->reset_state = IFX_I2C_STATE_RESET_INIT;
 				pal_os_event_register_callback_oneshot((register_callback)ifx_i2c_init,
@@ -420,6 +425,8 @@ static host_lib_status_t ifx_i2c_init(ifx_i2c_context_t* p_ifx_i2c_context)
 		p_ifx_i2c_context->pl.request_soft_reset = (uint8_t)TRUE;	//Soft reset
 		api_status = ifx_i2c_tl_init(p_ifx_i2c_context,ifx_i2c_tl_event_handler);
 	}	
+
+	printf("<ifx_i2c_init()\r\n");
 
     return api_status;
 }

@@ -304,11 +304,11 @@ static host_lib_status_t optiga_comms_status;
  */
 static void trustx_reset_gpio_init()
 {
-	printf(">trustx_reset_gpio_init()\r\n");
+	//printf(">trustx_reset_gpio_init()\r\n");
 	gpio_pad_select_gpio(GPIO_OUTPUT_IO_OTX_RST);
 	/* Set the GPIO as a push/pull output */
 	gpio_set_direction(GPIO_OUTPUT_IO_OTX_RST, GPIO_MODE_OUTPUT);
-	printf("<trustx_reset_gpio_init()\r\n");
+	//printf("<trustx_reset_gpio_init()\r\n");
 }
 
 /**
@@ -345,17 +345,23 @@ static int32_t optiga_init(void)
 			break;
 		}
 
+		printf("optiga_init() wait for IFX initialization to complete\r\n");
+
 		//Wait until IFX I2C initialization is complete
 		while(optiga_comms_status == OPTIGA_COMMS_BUSY)
 		{
 			pal_os_timer_delay_in_milliseconds(5);
 		}
 
+		printf("optiga_init() wait for IFX initialization to completed\r\n");
+
 		if((OPTIGA_COMMS_SUCCESS != status) || (optiga_comms_status == OPTIGA_COMMS_ERROR))
 		{
 			configPRINTF( ("Failure: optiga_comms_status(): 0x%04X\n\r", status) );
 			break;
 		}
+
+		printf("optiga_init() open application.w\r\n");
 
 		status = optiga_util_open_application(&optiga_comms);
 		if(OPTIGA_LIB_SUCCESS != status)
@@ -367,7 +373,11 @@ static int32_t optiga_init(void)
 		status = OPTIGA_LIB_SUCCESS;
 	} while(0);
 
-	printf("<optiga_init()\r\n");
+	printf("<optiga_init()\r\n\n");
+
+	//Stop
+	configPRINTF( ("Halt after Open Application()\n\r") );
+	while(1);
 
 	return status;
 }
@@ -929,7 +939,7 @@ int app_main( void )
 
 static void prvMiscInitialization( void )
 {
-	printf(">prvMiscInitialization()\r\n");
+	//printf(">prvMiscInitialization()\r\n");
 
 	// Initialize NVS
 	esp_err_t ret = nvs_flash_init();
@@ -940,7 +950,7 @@ static void prvMiscInitialization( void )
 	
 	trustx_reset_gpio_init();
 	
-	printf("<prvMiscInitialization()\r\n");
+	//printf("<prvMiscInitialization()\r\n");
 
 	ESP_ERROR_CHECK( ret );
 }

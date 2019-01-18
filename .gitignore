@@ -1,0 +1,12 @@
+
+*.mk
+*.d
+*.o
+*.map
+*.a
+*.bin
+*.ld
+*.elf
+*.conf
+*.cmd
+demos/espressif/esp32_devkitc_esp_wrover_kit_trustx/make/build/*

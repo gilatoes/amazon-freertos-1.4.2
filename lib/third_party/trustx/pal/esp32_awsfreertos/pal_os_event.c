@@ -105,6 +105,8 @@ void vTaskCallbackHandler( void * pvParameters )
 	pal_os_event_clbs_t clb_params;
 	register_callback func = NULL;
 	void * func_args = NULL;
+
+	printf(">vTaskCallbackHandler()\r\n");
 	/* See if we can obtain the element from the Queue.  If the Queue is not
 	available wait block the task to see if it becomes free.
 	portMAX_DELAY works only if INCLUDE_vTaskSuspend id define to 1
@@ -120,6 +122,8 @@ void vTaskCallbackHandler( void * pvParameters )
 			}
 		}
 	} while(1);
+
+	printf("<vTaskCallbackHandler()\r\n");
 }
 
 
@@ -137,6 +141,8 @@ pal_status_t pal_os_event_init(void)
 	uint8_t i = 0;
 	char tmr_name[10];
 	TaskHandle_t xHandle = NULL;
+
+	printf(">pal_os_event_init()\r\n");
 
 	for (i = 0; i < MAX_CALLBACKS; i++)
 	{
@@ -173,6 +179,7 @@ pal_status_t pal_os_event_init(void)
 				&xHandle );      /* Used to pass out the created task's handle. */
 
 
+	printf("<pal_os_event_init()\r\n");
 	return PAL_STATUS_SUCCESS;
 }
 /**
@@ -195,6 +202,8 @@ void pal_os_event_register_callback_oneshot(register_callback callback,
 {
 	uint8_t i = 0;
 
+	printf(">pal_os_event_register_callback_oneshot() time=%d\r\n", time_us);
+
     for (i = 0; i < MAX_CALLBACKS; i++)
     {
     	portENTER_CRITICAL();
@@ -204,6 +213,8 @@ void pal_os_event_register_callback_oneshot(register_callback callback,
     			time_us = 1000;
     		}
     		xTimerChangePeriod( otxTimer[i], pdMS_TO_TICKS(time_us / 100), 0 );
+
+    		printf("pal_os_event_register_callback_oneshot() i=%d\r\n", i);
     		clbs[i].clb = callback;
     		clbs[i].clb_ctx = callback_args;
 			
@@ -211,10 +222,13 @@ void pal_os_event_register_callback_oneshot(register_callback callback,
     		break;
 		} else if ( i == (MAX_CALLBACKS - 1) )
 		{
+			printf("*** No available timers ***\r\n");
 			//ESP_LOGE("PAL_OS_EVENT", "No available Timers");
 		}
     	portEXIT_CRITICAL();
     }
+
+    printf("<pal_os_event_register_callback_oneshot()\r\n");
 }
 
 /**
