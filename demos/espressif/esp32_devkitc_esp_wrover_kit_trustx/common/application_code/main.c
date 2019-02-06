@@ -376,8 +376,8 @@ static int32_t optiga_init(void)
 	printf("<optiga_init()\r\n\n");
 
 	//Stop
-	configPRINTF( ("Halt after Open Application()\n\r") );
-	while(1);
+	//configPRINTF( ("Halt after Open Application()\n\r") );
+	//while(1);
 
 	return status;
 }

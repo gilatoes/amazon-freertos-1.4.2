@@ -202,7 +202,7 @@ void pal_os_event_register_callback_oneshot(register_callback callback,
 {
 	uint8_t i = 0;
 
-	printf(">pal_os_event_register_callback_oneshot() time=%d\r\n", time_us);
+	//printf(">pal_os_event_register_callback_oneshot() time=%d\r\n", time_us);
 
     for (i = 0; i < MAX_CALLBACKS; i++)
     {
@@ -214,7 +214,7 @@ void pal_os_event_register_callback_oneshot(register_callback callback,
     		}
     		xTimerChangePeriod( otxTimer[i], pdMS_TO_TICKS(time_us / 100), 0 );
 
-    		printf("pal_os_event_register_callback_oneshot() i=%d\r\n", i);
+    		//printf("pal_os_event_register_callback_oneshot() i=%d\r\n", i);
     		clbs[i].clb = callback;
     		clbs[i].clb_ctx = callback_args;
 			
@@ -228,7 +228,7 @@ void pal_os_event_register_callback_oneshot(register_callback callback,
     	portEXIT_CRITICAL();
     }
 
-    printf("<pal_os_event_register_callback_oneshot()\r\n");
+    //printf("<pal_os_event_register_callback_oneshot()\r\n");
 }
 
 /**
